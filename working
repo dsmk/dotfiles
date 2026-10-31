@@ -1,0 +1,40 @@
+[
+  {
+    "table" : "documents",
+    "object" : "FvFrzOO1GReuFnmP9fcGdQ",
+    "app" : "com.google.Chrome",
+    "permissions" : "read,write,grant-permissions",
+    "data" : "(b'/var/home/dsmk/projects/time-tracking/deploy/k8s/kind/kind-ca.crt', 38, 8557740, 0, [0xac, 0x94, 0x82, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0xb0, 0x00, 0x00])"
+  }
+]
+  310  flatpak remotes 
+  311  flatpak 
+  312  flatpak --help
+  313  flatpak remotes
+  314  flatpak remote-info flathub
+  315  flatpak remotes
+  316  flatpak remotes --help
+  317  flatpak remotes -d
+  370  flatpak list
+  451  flatpak list --app --columns=application,name
+  452  flatpak 
+  453  flatpak -h
+  454  flatpak permission-show com.google.Chrome
+  455  flatpak permission-show -h com.google.Chrome
+  456  flatpak permission-show -v com.google.Chrome
+  457  flatpak permission-show -j com.google.Chrome
+  458  flatpak override --user --filesystem="$HOME/.local/share/applications:rw" --filesystem="$HOME/.local/share/icons:rw" com.google.Chrome
+  459  flatpak permission-show -j com.google.Chrome
+  551  just flatpak-ensure 
+  552  flatpak install org.flatseal.Flatseal
+  553  flatpak search flatseal
+  554  flatpak search Liquid
+  555  flatpak search sky
+  556  flatpak install com.github.tchx84.Flatseal
+  605  history  | grep flatpak
+  606  flatpak permission-show com.google.Chrome
+  607  flatpak permission-show --user com.google.Chrome
+  608  flatpak permission-show com.google.Chrome
+  609  flatpak permission-show -j com.google.Chrome
+  610  flatpak permission-show -j com.google.Chrome >working
+  612  history | grep flatpak >>working 

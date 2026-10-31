@@ -1,0 +1,139 @@
+eduroam:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    nmcli connection delete eduroam 2>/dev/null || true
+
+    nmcli connection add \
+      type wifi \
+      con-name eduroam \
+      ifname "*" \
+      ssid eduroam \
+      connection.autoconnect yes \
+      wifi-sec.key-mgmt wpa-eap \
+      802-1x.eap peap \
+      802-1x.identity "dsmk@bu.edu" \
+      802-1x.phase2-auth mschapv2 \
+      802-1x.system-ca-certs no \
+      802-1x.password-flags 2
+
+    nmcli --ask connection up eduroam
+
+# Bring up the AnyConnect connection
+vpn-up connection_name="ad-admin":
+    nmcli connection up id {{quote(connection_name)}}
+
+# Disconnect it
+vpn-down connection_name="ad-admin":
+    nmcli connection down id {{quote(connection_name)}}
+
+# Show active connections and device state
+network-status:
+    nmcli general status
+    nmcli device status
+    nmcli connection show --active
+
+# List saved connections
+connections:
+    nmcli -f NAME,TYPE,DEVICE connection show
+
+# Show recent NetworkManager logs when troubleshooting
+network-logs:
+    sudo journalctl -u NetworkManager --since "15 minutes ago" --no-pager
+
+anyconnect vpn_url="https://vpn.bu.edu/ad-admin" connection_name="ad-admin" username="":
+    #!/usr/bin/bash
+    set -euo pipefail
+
+    VPN_URL={{quote(vpn_url)}}
+    CON_NAME={{quote(connection_name)}}
+    VPN_USER={{quote(username)}}
+
+    if [[ -z "$VPN_URL" ]]; then
+      echo "Usage: just anyconnect <vpn-url> [connection-name] [username]" >&2
+      echo "Example: just anyconnect https://vpn.bu.edu/ad-admin 'AnyConnect' alice" >&2
+      exit 2
+    fi
+
+    if ! command -v nmcli >/dev/null 2>&1; then
+      echo "Error: nmcli is not installed." >&2
+      exit 1
+    fi
+
+    VPN_DATA="authtype=password,autoconnect-flags=0,certsigs-flags=0,cookie-flags=2,disable_udp=no,enable_csd_trojan=no,gateway=${VPN_URL},gateway-flags=2,gwcert-flags=2,lasthost-flags=0,pem_passphrase_fsid=no,prevent_invalid_cert=no,protocol=anyconnect,resolve-flags=2,stoken_source=disabled,useragent=AnyConnect,xmlconfig-flags=0"
+
+    if nmcli connection show id "$CON_NAME" >/dev/null 2>&1; then
+      echo "Updating existing connection '$CON_NAME'."
+      nmcli connection modify "$CON_NAME" vpn.data "$VPN_DATA"
+    else
+      echo "Creating connection '$CON_NAME'."
+      nmcli connection add \
+        type vpn \
+        vpn-type openconnect \
+        con-name "$CON_NAME" \
+        vpn.data "$VPN_DATA"
+    fi
+
+    if [[ -n "$VPN_USER" ]]; then
+      nmcli connection modify "$CON_NAME" vpn.user-name "$VPN_USER"
+    fi
+
+    echo "Created connection '$CON_NAME' for $VPN_URL."
+
+
+toolbox_container := "dev"
+toolbox_image := "ghcr.io/dsmk/developer-platform-dev:main"
+
+# Flatpak application IDs to keep installed for this user.
+# Edit this list to match your setup.
+flatpak_apps := "om.discordapp.Discord com.slack.Slack io.github.kolunmi.Bazaar io.podman_desktop.PodmanDesktop md.obsidian.Obsidian org.flatseal.Flatseal org.gnome.baobab org.libreoffice.LibreOffice org.virt_manager.virt-manager us.zoom.Zoom"
+
+# Remove and recreate the toolbox container
+toolbox-rebuild container=toolbox_container image=toolbox_image:
+    #!/usr/bin/bash
+    set -euo pipefail
+
+    if ! command -v toolbox >/dev/null 2>&1; then
+      echo "Error: toolbox is not installed." >&2
+      exit 1
+    fi
+
+    read -r -p "This will delete toolbox '{{container}}'. Continue? [y/N] " answer
+    case "$answer" in
+      y|Y|yes|YES) ;;
+      *) echo "Cancelled."; exit 1 ;;
+    esac
+
+    # Ignore the error if the container does not exist yet.
+    toolbox rm --force "{{container}}" >/dev/null 2>&1 || true
+    toolbox create --container "{{container}}" --image "{{image}}"
+
+# Ensure the listed Flatpak applications are installed for this user
+flatpak-ensure apps=flatpak_apps:
+    #!/usr/bin/bash
+    set -euo pipefail
+
+    if ! command -v flatpak >/dev/null 2>&1; then
+      echo "Error: flatpak is not installed." >&2
+      exit 1
+    fi
+
+    flatpak remote-add --user --if-not-exists flathub \
+      https://flathub.org/repo/flathub.flatpakrepo
+
+    for app in {{quote(apps)}}; do
+      if flatpak info --user "$app" >/dev/null 2>&1; then
+        echo "Already installed: $app"
+      else
+        echo "Installing: $app"
+        flatpak install --user --assumeyes flathub "$app"
+      fi
+    done
+
+# Update installed user Flatpaks
+flatpak-update:
+    flatpak update --user --assumeyes
+
+# List installed user applications
+flatpak-list:
+    flatpak list --user --app
