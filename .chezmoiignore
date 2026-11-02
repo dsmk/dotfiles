@@ -1,0 +1,9 @@
+# Standard top-level files
+README.md
+LICENSE
+
+# This directory has documentation for this location
+docs/
+
+# This directory is where we play with new things
+playground/
