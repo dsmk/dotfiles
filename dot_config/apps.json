@@ -1,0 +1,22 @@
+{
+	"flatpak": [
+		{ "name": "com.discordapp.Discord" },
+		{ "name": "com.github.tchx84.Flatseal" },
+		{ "name": "com.google.Chrome", "override": [
+			"--env=XDG_DATA_HOME=/home/dsmk/.local/share",
+			"--filesystem=~/.local/share/applications:rw",
+			"--filesystem=~/.local/share/icons:rw"  ] },
+		{ "name": "com.ranfdev.DistroShelf"},
+		{ "name": "com.slack.Slack" },
+		{ "name": "io.github.kolunmi.Bazaar" },
+		{ "name": "io.github.pwr_solaar.solaar" },
+		{ "name": "io.podman_desktop.PodmanDesktop" },
+		{ "name": "md.obsidian.Obsidian" },
+		{ "name": "org.gnome.baobab" },
+		{ "name": "org.gnome.Firmware" },
+		{ "name": "org.libreoffice.LibreOffice" },
+		{ "name": "org.mozilla.firefox" },
+		{ "name": "org.virt_manager.virt-manager" },
+		{ "name": "us.zoom.Zoom" }
+	]
+}

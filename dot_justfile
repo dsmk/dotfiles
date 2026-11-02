@@ -86,6 +86,8 @@ toolbox_image := "ghcr.io/dsmk/developer-platform-dev:main"
 
 # Flatpak application IDs to keep installed for this user.
 # Edit this list to match your setup.
+app_file := "~/.config/apps.json"
+
 flatpak_apps := "om.discordapp.Discord com.slack.Slack io.github.kolunmi.Bazaar io.podman_desktop.PodmanDesktop md.obsidian.Obsidian org.flatseal.Flatseal org.gnome.baobab org.libreoffice.LibreOffice org.virt_manager.virt-manager us.zoom.Zoom"
 
 # Remove and recreate the toolbox container
@@ -109,7 +111,7 @@ toolbox-rebuild container=toolbox_container image=toolbox_image:
     toolbox create --container "{{container}}" --image "{{image}}"
 
 # Ensure the listed Flatpak applications are installed for this user
-flatpak-ensure apps=flatpak_apps:
+flatpak-ensure app_file=app_file:
     #!/usr/bin/bash
     set -euo pipefail
 
@@ -121,13 +123,38 @@ flatpak-ensure apps=flatpak_apps:
     flatpak remote-add --user --if-not-exists flathub \
       https://flathub.org/repo/flathub.flatpakrepo
 
-    for app in {{quote(apps)}}; do
-      if flatpak info --user "$app" >/dev/null 2>&1; then
-        echo "Already installed: $app"
+    for app in `jq -c '.flatpak[]' "$HOME/.config/apps.json"`; do
+      #echo "app: $app"
+      app_name=$(echo "$app" | jq -r '.name')
+      app_insttype=$(echo "$app" | jq -r '.install_type' )
+      if [ "$app_insttype" = "null" ]; then
+        app_insttype="--user"
+      fi 
+      #echo "name: $app_name type: $app_insttype"
+      # we check whether app_name already installed either system or user
+      # since in either case we want - insttype only comes into play when
+      # we are installing the app
+      #
+      if flatpak info "$app_name" >/dev/null 2>&1; then
+        echo "Already installed: $app_name"
       else
-        echo "Installing: $app"
-        flatpak install --user --assumeyes flathub "$app"
+        echo "Installing: $app_name ($app_insttype)"
+        flatpak install --user --assumeyes flathub "$app_name"
       fi
+
+      # Now we check for override
+      app_override=$(echo "$app" | jq -r '.override' )
+      if [ "$app_override" != "null" ]; then
+        #echo "Have overrides to process"
+        #echo "app: $app_name override: $app_override"
+        for override in $(echo "$app" | jq -r '.override[]') ; do
+          echo "    app: $app_name override: $override"
+          flatpak override --user "$override" $app_name
+        done
+      fi
+      set +x
+        # we have overrides to do
+        # for override in $(echo "$app_overrides" ")
     done
 
 # Update installed user Flatpaks
