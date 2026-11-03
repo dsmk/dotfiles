@@ -6,6 +6,7 @@ $os\
 $username\
 [](bg:peach fg:red)\
 $directory\
+${custom.toolbox}\
 [](bg:yellow fg:peach)\
 $git_branch\
 $git_status\
@@ -67,6 +68,13 @@ style = "bg:peach fg:crust"
 format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
+
+[custom.toolbox]
+description = "Inside a container (toolbox/distrobox)"
+when = "test -f /run/.toolboxenv && test -f /run/.containerenv"
+command = '''awk -F '"' '$1 == "name=" { print $2; found=1; exit } END { if (!found) print "toolbox" }' /run/.containerenv'''
+format = '[ 📦 $output ]($style)'
+style = "bg:peach fg:crust"
 
 [directory.substitutions]
 "Documents" = "󰈙 "
