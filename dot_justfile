@@ -108,6 +108,8 @@ toolbox-rebuild container=toolbox_container image=toolbox_image:
 
     # Ignore the error if the container does not exist yet.
     toolbox rm --force "{{container}}" >/dev/null 2>&1 || true
+    # pull the latest version
+    podman pull "{{image}}"
     toolbox create --container "{{container}}" --image "{{image}}"
 
 # Ensure the listed Flatpak applications are installed for this user
