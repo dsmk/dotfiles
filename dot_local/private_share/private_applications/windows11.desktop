@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Windows 11
+GenericName=Virtual Machine
+Comment=Start and connect to Windows 11 container via FreeRDP
+Exec=/var/home/dsmk/.local/bin/win11-rdp
+Icon=computer
+Terminal=false
+Categories=System;Emulator;
+Keywords=windows;win11;vm;rdp;virtual;
+
