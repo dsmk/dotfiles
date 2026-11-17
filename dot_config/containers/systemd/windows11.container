@@ -1,0 +1,44 @@
+[Unit]
+Description=Windows 11 Virtual Machine (dockurr/windows)
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=docker.io/dockurr/windows:latest
+ContainerName=windows11
+
+# SELinux & KVM device passthrough for rootless Podman
+SecurityLabelDisable=true
+AddDevice=/dev/kvm
+
+# VM hardware & networking configuration
+Environment=VERSION=11
+Environment=RAM_SIZE=8G
+Environment=CPU_CORES=4
+Environment=DISK_SIZE=64G
+Environment=NETWORK=user
+# Optional: customize credentials (defaults to Docker / admin)
+Environment=USERNAME=Docker
+Environment=PASSWORD=admin
+
+# Web viewer (8006) & RDP (3389)
+PublishPort=127.0.0.1:8006:8006
+PublishPort=127.0.0.1:3389:3389/tcp
+PublishPort=127.0.0.1:3389:3389/udp
+
+# Persistent storage & Shared folder (:Z relabels for SELinux)
+Volume=%h/windows-vm:/storage:Z
+Volume=%h/windows-shared:/shared:Z
+
+# Give Windows 2 minutes to shut down cleanly via ACPI before killing QEMU
+StopTimeout=120
+
+[Service]
+Restart=on-failure
+TimeoutStopSec=135
+
+# Note: Omit [Install] if you only want Windows 11 to start on demand when launched from fuzzel.
+# Uncomment the two lines below if you want Windows 11 to boot automatically on login:
+# [Install]
+# WantedBy=default.target
+

@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+RDP_HOST="127.0.0.1"
+RDP_PORT="3389"
+RDP_USER="${WIN11_USER:-Docker}"
+RDP_PASS="${WIN11_PASS:-admin}"
+
+# 1. Start the Quadlet systemd service if it isn't already active
+if ! systemctl --user is-active --quiet windows11.service; then
+    command -v notify-send >/dev/null && notify-send "Windows 11" "Starting VM container..."
+    systemctl --user start windows11.service
+fi
+
+# 2. Wait for the RDP port to open (up to 90 seconds for Windows boot)
+for _ in $(seq 1 90); do
+    if bash -c ">/dev/tcp/${RDP_HOST}/${RDP_PORT}" 2>/dev/null; then
+        break
+    fi
+    sleep 1
+done
+
+if ! bash -c ">/dev/tcp/${RDP_HOST}/${RDP_PORT}" 2>/dev/null; then
+    command -v notify-send >/dev/null && notify-send -u critical "Windows 11" "Timed out waiting for RDP on port ${RDP_PORT}. Check http://localhost:8006"
+    exit 1
+fi
+
+# 3. Connect via Wayland FreeRDP (handles FreeRDP 3.x or 2.x)
+if command -v wlfreerdp3 >/dev/null; then
+    RDP_BIN="wlfreerdp3"
+else
+    RDP_BIN="wlfreerdp"
+fi
+
+exec "$RDP_BIN" \
+    /v:"${RDP_HOST}:${RDP_PORT}" \
+    /u:"${RDP_USER}" \
+    /p:"${RDP_PASS}" \
+    /cert:ignore \
+    /dynamic-resolution \
+    +clipboard \
+    /sound:sys:pulse \
+    /microphone:sys:pulse \
+    /t:"Windows 11"
+
