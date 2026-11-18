@@ -1,7 +1,16 @@
 # Office: portrait monitor on the left, laptop on the right.
 profile office {
-    output "Dell Inc. DELL U2722D ABC123" enable mode 2560x1440 scale 1 transform 90 position 0,0
-    output eDP-1 enable scale 1 position 1440,0
+    output "Samsung Electric Company C27F398 HTQK904519" enable scale 1 mode 1920x1080 position 0,0
+    output "Lenovo Group Limited L2251x Wide 6V8M5043" enable scale 1 mode 1680x1050 transform 90 position 1920,0
+    #output eDP-1 enable scale 1 position 1440,0
+    output eDP-1 disable
+
+    #exec ~/.config/sway/place-workspaces.sh \
+    #exec ~/.local/bin/place-workspaces.sh \
+    #    "1:dev" "Samsung Electric Company C27F398 HTQK904519" \
+    #    "10: second" "Lenovo Group Limited L2251x Wide 6V8M5043" 
+
+    #exec swaymsg workspace "10: second", move workspace to output "Lenovo Group Limited L2251x Wide 6V8M5043"
 }
 
 # Home: another portrait monitor, rotated in the other direction.
