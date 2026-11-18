@@ -16,5 +16,5 @@ profile home {
 
 # Undocked fallback. Keep this after the more specific profiles.
 profile laptop {
-    output eDP-1 enable scale 1 position 0,0
+    output eDP-1 enable scale 1.6 position 0,0
 }
