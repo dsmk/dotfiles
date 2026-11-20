@@ -1,0 +1,8 @@
+{
+	"repos": [
+		{ "name": "bootc-images",
+		  "repo": "git@github.com:/dsmk/bootc-images.git" },
+		{ "name": "linux-dev-laptop",
+		  "repo": "git@github.com:dsmk/linux-dev-laptop.git" }
+	]
+}

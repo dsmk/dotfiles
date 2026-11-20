@@ -26,13 +26,20 @@ set $ws_web "2: browsing"
 set $ws_comm "3: communication"
 set $ws_mail "4: mail"
 set $ws_util "8: utils"
+set $ws_emu  "9: emu"
 set $ws_second "10: second"
+
+### This is a cheesy way to make certain that the $ws_second workspace ends up 
+# on the secondary screen for our home and work systems.
+#
+workspace $ws_second output "Dell Inc. DELL S2722QC 54F5MD3" "Lenovo Group Limited L2251x Wide 6V8M5043"
 
 ### Automatically apply applications to certain workspaces
 #
 assign [app_id="com.slack.Slack"] $ws_comm
 assign [app_id="com.github.IsmaelMartinez.teams_for_linux"] $ws_comm
 assign [app_id="com.onepassword.OnePassword"] $ws_util
+assign [app_id="wlfreerdp"] $ws_emu
 
 ### Output configuration
 #
@@ -49,10 +56,10 @@ output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 #
 # Example configuration:
 #
-# exec swayidle -w \
-#          timeout 300 'swaylock -f -c 000000' \
-#          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-#          before-sleep 'swaylock -f -c 000000'
+#exec swayidle -w \
+#         timeout 300 'swaylock -f -c 000000' \
+#         timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+#         before-sleep 'swaylock -f -c 000000'
 #
 # This will lock your screen after 300 seconds of inactivity, then turn off
 # your displays after another 300 seconds, and turn your screens back on when
@@ -142,8 +149,8 @@ input type:touchpad {
     bindsym $mod+5 workspace number 5
     bindsym $mod+6 workspace number 6
     bindsym $mod+7 workspace number 7
-    bindsym $mod+8 workspace number 8
-    bindsym $mod+9 workspace number 9
+    bindsym $mod+8 workspace number $ws_util
+    bindsym $mod+9 workspace number $ws_emu
     bindsym $mod+0 workspace number $ws_second
     # Move focused container to workspace
     bindsym $mod+Shift+1 move container to workspace number $ws_dev
@@ -153,8 +160,8 @@ input type:touchpad {
     bindsym $mod+Shift+5 move container to workspace number 5
     bindsym $mod+Shift+6 move container to workspace number 6
     bindsym $mod+Shift+7 move container to workspace number 7
-    bindsym $mod+Shift+8 move container to workspace number 8
-    bindsym $mod+Shift+9 move container to workspace number 9
+    bindsym $mod+Shift+8 move container to workspace number $ws_util
+    bindsym $mod+Shift+9 move container to workspace number $ws_emu
     bindsym $mod+Shift+0 move container to workspace number $ws_second
     # Note: workspaces can have any name you want, not just numbers.
     # We just use 1-10 as the default.
@@ -265,10 +272,14 @@ exec nm-applet --indicator
 exec blueman-applet
 exec_always kanshictl reload || kanshi &
 
+bindsym $mod+Shift+z exec swaylock -f 
+
 bindsym $mod+Shift+n exec nautilus
 bindsym $mod+Shift+f exec fuzzel
 bindsym $mod+n exec nm-connection-editor
 
+bindsym $mod+Shift+p exec ~/.local/bin/vscode-project
+bindsym $mod+Shift+d exec toolbox run --container dev -- code --new-window
 # This makes a simple pop up calculator which can do other things.
 for_window [app_id="terminal-floating"] floating enable
 bindsym $mod+Semicolon exec '$term --app-id=terminal-floating python3 -q'

@@ -166,3 +166,23 @@ flatpak-update:
 # List installed user applications
 flatpak-list:
     flatpak list --user --app
+
+# Ensure that we have a standard set of github repos
+ensure-projects dir="$HOME/projects":
+    #!/usr/bin/bash
+    set -euo pipefail
+
+    for entry in $(jq -c '.repos[]' "${HOME}/.config/repos.json"); do
+       repo_name=$(echo "$entry" | jq -r '.name')
+       repo_url=$(echo "$entry" | jq -r '.repo')
+       repo_dir="{{dir}}/$repo_name"
+       #echo "$repo_name: dir=$repo_dir
+
+       if [ -d "$repo_dir" ]; then
+         echo "$repo_name: already exists"
+       else
+         echo "$repo_name: cloning $repo_url"
+         git clone "$repo_url" "$repo_dir"
+         echo "==============="
+       fi
+    done

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+project=$(
+  find "$HOME/projects" -mindepth 1 -maxdepth 1 -type d -print |
+    sort |
+    fuzzel --dmenu --prompt="VS Code project: "
+) || exit 0
+
+[[ -d "$project" ]] || exit 0
+
+exec toolbox run --container dev -- code --new-window "$project"
+# Saving this as an example of naming through kitty
+#exec kitty \
+#  --title "VS Code — $(basename "$project")" \
+#  --directory "$project" \
+#  sh -lc 'exec toolbox run --container dev -- code --new-window .'
