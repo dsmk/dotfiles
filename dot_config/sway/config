@@ -170,9 +170,13 @@ input type:touchpad {
 # When we have multiple monitors we need ways to shift focus 
 # to other displays
 
+# Move workspaces to next displays
+bindsym $mod+Ctrl+Right move workspace to output right
+bindsym $mod+Ctrl+Left move workspace to output left
+
 # Cycle through workspaces belonging to the focused display.
-bindsym $mod+Ctrl+Right workspace next_on_output
-bindsym $mod+Ctrl+Left workspace prev_on_output
+bindsym $mod+Ctrl+Up workspace next_on_output
+bindsym $mod+Ctrl+Down workspace prev_on_output
 #
 # Layout stuff:
 #
