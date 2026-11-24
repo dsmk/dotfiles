@@ -1,5 +1,6 @@
 {
 	"flatpak": [
+		{ "name": "com.bitwarden.desktop" },
 		{ "name": "com.discordapp.Discord" },
 		{ "name": "com.github.tchx84.Flatseal" },
 		{ "name": "com.google.Chrome", "override": [
@@ -15,7 +16,6 @@
 		{ "name": "org.gnome.baobab" },
 		{ "name": "org.gnome.Firmware" },
 		{ "name": "org.libreoffice.LibreOffice" },
-		{ "name": "org.mozilla.firefox" },
 		{ "name": "org.virt_manager.virt-manager" },
 		{ "name": "us.zoom.Zoom" }
 	]
