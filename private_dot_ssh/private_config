@@ -1,4 +1,3 @@
 Host *
-	#	IdentityAgent ~/.1password/agent.sock
-	#IdentityAgent ~/.var/app/com.bitwarden.desktop/data/.bitwarden-ssh-agent.sock
-	IdentityAgent /var/home/dsmk/.var/app/com.bitwarden.desktop/data/.bitwarden-ssh-agent.sock
+	IdentityAgent ~/.1password/agent.sock
+	#IdentityAgent /var/home/dsmk/.var/app/com.bitwarden.desktop/data/.bitwarden-ssh-agent.sock

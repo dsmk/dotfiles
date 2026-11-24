@@ -32,14 +32,21 @@ set $ws_second "10: second"
 ### This is a cheesy way to make certain that the $ws_second workspace ends up 
 # on the secondary screen for our home and work systems.
 #
+workspace $ws_dev output "Dell Inc. DELL S2722QC 54F5MD3" "Lenovo Group Limited L2251x Wide 6V8M5043"
 workspace $ws_second output "Dell Inc. DELL S2722QC 54F5MD3" "Lenovo Group Limited L2251x Wide 6V8M5043"
 
 ### Automatically apply applications to certain workspaces
 #
 assign [app_id="com.slack.Slack"] $ws_comm
 assign [app_id="com.github.IsmaelMartinez.teams_for_linux"] $ws_comm
-assign [app_id="com.onepassword.OnePassword"] $ws_util
+#assign [app_id="com.onepassword.OnePassword"] $ws_util
 assign [app_id="wlfreerdp"] $ws_emu
+
+# ####
+# 1password 
+#
+for_window [app_id="com.onepassword.OnePassword"] floating enable
+exec  1password --silent
 
 ### Output configuration
 #
@@ -170,13 +177,9 @@ input type:touchpad {
 # When we have multiple monitors we need ways to shift focus 
 # to other displays
 
-# Move workspaces to next displays
-bindsym $mod+Ctrl+Right move workspace to output right
-bindsym $mod+Ctrl+Left move workspace to output left
-
 # Cycle through workspaces belonging to the focused display.
-bindsym $mod+Ctrl+Up workspace next_on_output
-bindsym $mod+Ctrl+Down workspace prev_on_output
+bindsym $mod+Ctrl+Right workspace next_on_output
+bindsym $mod+Ctrl+Left workspace prev_on_output
 #
 # Layout stuff:
 #
