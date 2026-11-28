@@ -1,0 +1,30 @@
+{
+    (
+        modifiers: [
+            Super,
+            Shift,
+        ],
+        key: "t",
+        description: Some("Dev Terminal"),
+    ): Spawn("kitty --title toolbox-dev -e toolbox enter dev"),
+    (
+        modifiers: [
+            Super,
+            Shift,
+        ],
+        key: "p",
+        description: Some("VSCode Project"),
+    ): Spawn("kitten quick-access-terminal --instance-group vscode-selector --detach vscode-kitty"),
+    (
+        modifiers: [
+            Super,
+        ],
+        key: "semicolon",
+        description: Some("Python Calculator"),
+    ): Spawn("kitten quick-access-terminal --instance-group scratchpad --detach python3 -q"),
+    (
+        modifiers: [
+            Super,
+        ],
+    ): System(WorkspaceOverview),
+}
